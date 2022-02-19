@@ -316,7 +316,7 @@ class dingdingConsole(androidConsole):
             return ''
         os.system('rm -rf ' + self.tmpFile)
         for line in uiData.split('<'):
-            keyword = 'com.alibaba.android.rimet:id/menu_current_company'
+            keyword = 'com.alibaba.android.rimet:id/menu_current_company'  # not found after DingTalk updated
             keyword = 'com.alibaba.android.rimet:id/tv_org_name'
             if keyword in line:
                 for statement in line.split():
@@ -499,11 +499,14 @@ class dingdingConsole(androidConsole):
 
 
 def sendMail(coName, subject='', image='', attach=''):
+    """
+    这一段是github抄的，发多了也是垃圾邮件，删了可好😄
+    """
     # Server Config
-    smtpHost = 'SMTP OF YOUR SENDER'
-    mailSender = 'YOUR SENDER MAIL ADDRESS'
-    mailPassword = 'YOUR SENDER PASSWORD'
-    mailReceivers = ['receiver@test.com']
+    smtpHost = 'SMTP OF YOUR SENDER'  # NEED modify
+    mailSender = 'YOUR SENDER MAIL ADDRESS'  # NEED modify
+    mailPassword = 'YOUR SENDER PASSWORD'  # NEED modify
+    mailReceivers = ['receiver@test.com']  # NEED modify
 
     # Mail Config
     mm = MIMEMultipart('related')
@@ -513,8 +516,8 @@ def sendMail(coName, subject='', image='', attach=''):
     else:
         subjectContent = subject
 
-    mm['From'] = 'DingDingCheckInAutoSender<sender@test.com>'
-    mm['to'] = 'receiver<receiver@test.com>'
+    mm['From'] = 'DingDingCheckInAutoSender<sender@test.com>'  # NEED modify
+    mm['to'] = 'receiver<receiver@test.com>'  # NEED modify
     mm['subject'] = Header(subjectContent, 'utf-8')
 
     # Mail Body
@@ -601,21 +604,22 @@ def isWorkday(date8bits=''):
 
 
 if __name__ == '__main__':
-    # devid = getDevIdList()[0]
     devid = getDevList()[0]
+
+    wechat_user = '微信接受人'
+    compName = '企业全称（钉钉显示为准）'
 
     # will not be executed while TODAY is holiday or weekend.
     if not isWorkday():
         print('Today "{}" is not workday.'.format(time.strftime('%Y/%m/%d')))
         wechatCsl = wechatConsole(devid)
-        wechatCsl.sendMsg2one('北肙™', 'Today \<{}\> is not workday, checked at: {}.'
+        wechatCsl.sendMsg2one(wechat_user, 'Today \<{}\> is not workday, checked at: {}.'
                               .format(time.strftime('%Y/%m/%d %A'), time.strftime("%H:%M")), lastPic=False)
         wechatCsl.returnHome()
         wechatCsl.screenOff()
         exit(-1)
 
-    compName = '秋昆社'
     ddConsole = dingdingConsole(devid, compName, waitSecs=1)
-    ddConsole.checkIn(wechatUser='北肙™')
+    ddConsole.checkIn(wechatUser=wechat_user)
 
 
