@@ -500,11 +500,10 @@ class dingdingConsole(androidConsole):
 
 def sendMail(coName, subject='', image='', attach=''):
     # Server Config
-    smtpHost = 'smtp.qiye.aliyun.com'
-    mailSender = 'ding@beyan.me'
-    mailPassword = 'tZIk6uqC4Bo9M9pLRC0zI0'
-    mailReceivers = ['beyan@beyan.me']
-    # '18919882732@163.com'
+    smtpHost = 'SMTP OF YOUR SENDER'
+    mailSender = 'YOUR SENDER MAIL ADDRESS'
+    mailPassword = 'YOUR SENDER PASSWORD'
+    mailReceivers = ['receiver@test.com']
 
     # Mail Config
     mm = MIMEMultipart('related')
@@ -514,8 +513,8 @@ def sendMail(coName, subject='', image='', attach=''):
     else:
         subjectContent = subject
 
-    mm['From'] = 'DingDingCheckInAutoSender<ding@beyan.me>'
-    mm['to'] = 'beyan<beyan@beyan.me>'
+    mm['From'] = 'DingDingCheckInAutoSender<sender@test.com>'
+    mm['to'] = 'receiver<receiver@test.com>'
     mm['subject'] = Header(subjectContent, 'utf-8')
 
     # Mail Body
@@ -535,12 +534,6 @@ def sendMail(coName, subject='', image='', attach=''):
             pass
 
     # Add Attachment
-    """
-    attFile = screenShotDirAndName
-    att = MIMEText(open(attFile, 'rb').read(), 'base64', 'utf-8')
-    att['Content-Disposition'] = 'attachment; filename="test.xlsx"'
-    mm.attach(att)
-    """
     if not attach:
         attFile = '/var/log/dingding.log'
     else:
@@ -620,8 +613,6 @@ if __name__ == '__main__':
         wechatCsl.returnHome()
         wechatCsl.screenOff()
         exit(-1)
-
-    # compName = '甘肃银行股份有限公司'
 
     compName = '秋昆社'
     ddConsole = dingdingConsole(devid, compName, waitSecs=1)
