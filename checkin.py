@@ -12,7 +12,6 @@
 
 """
 DingTalk Automatically Checkin Script.
-
 class androidConsole() for ADB basic operate
 class dingdingConsole() for DingDing start/shutdown/checkin
 class wechatConsole() for Wechat send messages to someone
@@ -209,7 +208,7 @@ class androidConsole(object):
         wmSize = Popen(cmdStr, shell=True, stdout=PIPE, stderr=STDOUT).stdout.read().decode()
         if 'size:' in wmSize:
             fullSize = wmSize.split('size:')[-1].strip().split('x')
-            return [str(int(fullSize[0]) // 2), str(int(fullSize[1]) // 2)]
+            return [str(int(fullSize[0]) // 2), str(int(fullSize[1]) * 3 // 5)]
         else:
             return []
 
@@ -220,7 +219,6 @@ class wechatConsole(androidConsole):
         self.appName = 'com.tencent.mm'
         self.appActvName = 'com.tencent.mm/.ui.LauncherUI'
         androidConsole.__init__(self, self.devID, self.appName, self.appActvName)
-
 
     def launchWechat(self):
         return self.launchApp()
@@ -316,7 +314,7 @@ class dingdingConsole(androidConsole):
             return ''
         os.system('rm -rf ' + self.tmpFile)
         for line in uiData.split('<'):
-            keyword = 'com.alibaba.android.rimet:id/menu_current_company'  # not found after DingTalk updated
+            keyword = 'com.alibaba.android.rimet:id/menu_current_company'
             keyword = 'com.alibaba.android.rimet:id/tv_org_name'
             if keyword in line:
                 for statement in line.split():
@@ -386,7 +384,7 @@ class dingdingConsole(androidConsole):
         print(str(self.waitSecs) + 's')
         time.sleep(self.waitSecs)
 
-        print('Shutdown DingDing: ', end='', flush=True)
+        print('Shutdown DingTalk: ', end='', flush=True)
         self.shutdownDingDing()
         self.shutdownDingDing()
         while True:
@@ -397,7 +395,7 @@ class dingdingConsole(androidConsole):
                 print('Passed')
                 break
 
-        print('Launch DingDing: ', end='', flush=True)
+        print('Launch DingTalk: ', end='', flush=True)
         self.launchDingDing()
         self.lightOnScreenAndWait(3)
         while True:
@@ -437,7 +435,7 @@ class dingdingConsole(androidConsole):
 
         print('Tap check in icon: ', end='', flush=True)
         while True:
-            checkInIcon = self.getIconOrTextPointer('考勤打卡')
+            checkInIcon = self.getIconOrTextPointer('"考勤打卡"')
             if not checkInIcon:
                 self.lightOnScreenAndWait(1)
             else:
@@ -450,7 +448,7 @@ class dingdingConsole(androidConsole):
                 print('Passed')
                 break
 
-        # add method to verify if the big icon is exit.
+        """# add method to verify if the big icon is exit.
         print('Verify if the current page is the one we wanted: ', end='', flush=True)
         # This page return 'ERROR: could not get idle state.'
         while True:
@@ -458,7 +456,8 @@ class dingdingConsole(androidConsole):
                 print('Passed')
                 break
             else:
-                self.lightOnScreenAndWait(1)
+                self.lightOnScreenAndWait(1)"""
+        self.lightOnScreenAndWait(5)
 
         print('Finally, check in: ', end='', flush=True)
         self.tapScreen(self.midPoint)
@@ -591,6 +590,7 @@ def isWorkday(date8bits=''):
                         '20210926', '20211009',  # National Day
                         '20220129', '20220130',  # The Spring Festival
                         '20220402',  # The Tomb-sweeping Day
+                        '20220424',  # The International Labor Day
                         '20220507',  # The International Labor Day
                         '20221008', '20221009'  # The National Day
                         ]
@@ -621,5 +621,3 @@ if __name__ == '__main__':
 
     ddConsole = dingdingConsole(devid, compName, waitSecs=1)
     ddConsole.checkIn(wechatUser=wechat_user)
-
-
